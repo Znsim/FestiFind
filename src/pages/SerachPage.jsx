@@ -2,19 +2,23 @@ import React, { useState } from "react";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
-import Grid from "@mui/material/Grid";
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
-import festivals from "./FestivalData";
+import FormControl from "@mui/material/FormControl";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import Select from "@mui/material/Select";
+import festivals, { FestivalCards } from "./FestivalData"; // FestivalCards 가져오기
 
 export default function SearchPage() {
-    const [searchTerm, setSearchTerm] = useState(""); // 검색어 초기 값 (빈 문자열)
+    const [searchTerm, setSearchTerm] = useState(""); // 검색어 초기 값
     const [filteredFestivals, setFilteredFestivals] = useState(festivals); // 필터링 처리
+    const [location, setLocation] = useState(""); // 지역 선택 값
 
+    // 검색어 변경 처리
     const handleInputChange = (event) => {
         setSearchTerm(event.target.value);
     };
 
+    // 검색 버튼 클릭 처리
     const handleSearch = () => {
         const filtered = searchTerm.trim()
             ? festivals.filter((festival) =>
@@ -24,8 +28,38 @@ export default function SearchPage() {
         setFilteredFestivals(filtered);
     };
 
+    // 지역 선택 변경 처리
+    const handleLocationChange = (event) => {
+        const selectedLocation = event.target.value;
+        setLocation(selectedLocation);
+    
+        // 지역 값에 따라 필터링
+        const filtered = selectedLocation
+            ? festivals.filter((festival) => festival.location === selectedLocation)
+            : festivals; // 지역 값이 없을 경우 전체 축제 표시
+    
+        setFilteredFestivals(filtered); // 필터링된 데이터를 상태에 저장
+    };
+    
+
     return (
         <div style={{ padding: "20px" }}>
+            {/* 지역 선택 필드 */}
+            <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
+                <InputLabel>지역</InputLabel>
+                <Select
+                    value={location}
+                    label="지역"
+                    onChange={handleLocationChange} // 지역 변경 시 처리
+                >
+                    <MenuItem value="">전체</MenuItem> {/* 전체 보기 옵션 */}
+                    <MenuItem value="서울">서울</MenuItem>
+                    <MenuItem value="부산">부산</MenuItem>
+                    <MenuItem value="대구">대구</MenuItem>
+                    <MenuItem value="울산">울산</MenuItem>
+                </Select>
+            </FormControl>
+
             {/* 검색 필드와 버튼 */}
             <Box
                 component="form"
@@ -48,35 +82,8 @@ export default function SearchPage() {
                 </Button>
             </Box>
 
-            {/* 축제 카드 목록 */}
-            <Grid container spacing={3} style={{ marginTop: "20px" }}>
-                {filteredFestivals.map((festival) => (
-                    <Grid item xs={12} sm={6} md={4} key={festival.id}>
-                        <Card
-                            style={{
-                                boxShadow: "0px 4px 6px rgba(0,0,0,0.1)",
-                                borderRadius: "8px",
-                                overflow: "hidden",
-                            }}
-                        >
-                            <img
-                                src={festival.image || "https://via.placeholder.com/300"}
-                                alt={festival.title}
-                                style={{
-                                    width: "100%",
-                                    height: "150px",
-                                    objectFit: "cover",
-                                }}
-                            />
-                            <CardContent>
-                                <h2>{festival.title}</h2>
-                                <p>{festival.date}</p>
-                                <p>{festival.location}</p>
-                            </CardContent>
-                        </Card>
-                    </Grid>
-                ))}
-            </Grid>
+            {/* 축제 카드 컴포넌트 호출 */}
+            <FestivalCards filteredFestivals={filteredFestivals} />
         </div>
     );
 }
