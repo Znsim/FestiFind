@@ -2,31 +2,75 @@ import React from "react";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import SearchIcon from "@mui/icons-material/Search";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 export default function HeaderBar() {
-  const [value, setValue] = React.useState(0); // 기본값 설정
-  const navigate = useNavigate(); // React Router의 useNavigate 사용
+  const navigate = useNavigate();
+  const location = useLocation();
 
+  // 초기 상태를 URL 경로에 따라 설정
+  const getInitialValue = () => {
+    switch (location.pathname) {
+      case "/search":
+        return 0;
+      case "/calendar":
+        return 1;
+      case "/map":
+        return 2;
+      case "/mypage":
+        return 3;
+      case "/auth":
+        return 4;
+      default:
+        return -1; // 메인 페이지 등 기타 경로
+    }
+  };
+
+  const [value, setValue] = React.useState(getInitialValue);
+
+  // URL 경로와 Tabs의 value 상태를 동기화
+  React.useEffect(() => {
+    switch (location.pathname) {
+      case "/search":
+        setValue(0);
+        break;
+      case "/calendar":
+        setValue(1);
+        break;
+      case "/map":
+        setValue(2);
+        break;
+      case "/mypage":
+        setValue(3);
+        break;
+      case "/auth":
+        setValue(4);
+        break;
+      default:
+        setValue(-1); // 기타 경로
+        break;
+    }
+  }, [location.pathname]);
+
+  // 탭 변경 시 경로 이동
   const handleChange = (event, newValue) => {
     setValue(newValue);
 
-    // 각 Tab의 인덱스에 따라 경로 이동
     switch (newValue) {
       case 0:
-        navigate("/search"); // 검색 페이지
+        navigate("/search", { replace: true }); // 강제 이동
         break;
       case 1:
-        navigate("/calendar"); // 캘린더 페이지
+        navigate("/calendar");
         break;
       case 2:
-        navigate("/map"); // 지도 페이지
+        navigate("/map");
         break;
       case 3:
-        navigate("/mypage"); // 마이페이지
+        navigate("/mypage");
         break;
       case 4:
-        navigate("/auth"); // 로그인/회원가입 페이지
+        navigate("/userregistration");
         break;
       default:
         break;
@@ -36,15 +80,15 @@ export default function HeaderBar() {
   return (
     <div
       style={{
-        display: "flex", // Flexbox 사용
-        justifyContent: "center", // 가로 중앙 정렬
-        alignItems: "center", // 세로 중앙 정렬
-        backgroundColor: "#f5f5f5", // 배경색
-        padding: "10px", // 패딩 추가
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "#f5f5f5",
+        padding: "10px",
       }}
     >
       <Tabs
-        value={value}
+        value={value === -1 ? false : value} // -1인 경우 탭 선택 해제
         onChange={handleChange}
         aria-label="navigation tabs"
         centered

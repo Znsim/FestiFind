@@ -4,11 +4,11 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import { Box } from "@mui/material";
 import festivals, { FestivalCards } from "./FestivalData";
-
+import { useNavigate } from "react-router-dom";
+ 
 export default function MainPage() {
     const [currentIndex, setCurrentIndex] = useState(0); // 슬라이드 시작 인덱스 상태 관리
-
-    // 10초마다 슬라이드 이동
+    const navigate = useNavigate();
     useEffect(() => {
         const interval = setInterval(() => {
             setCurrentIndex((prevIndex) =>
@@ -26,12 +26,15 @@ export default function MainPage() {
         festivals[(currentIndex + 2) % festivals.length], // 다다음 축제
     ];
 
+    const handleCardClick = (id) => {
+        navigate(`/festival/${id}`); // 해당 ID로 상세 페이지 이동
+    };
+
     return (
         <div style={{ padding: "20px" }}>
             {/* 자동 슬라이드 카드 */}
             <Box
                 sx={{
-                    border: "2px solid black", // 검은색 테두리
                     borderRadius: "8px", // 둥근 모서리
                     padding: "20px", // 내부 여백
                     maxWidth: "1200px",
@@ -55,6 +58,7 @@ export default function MainPage() {
                             }}
                         >
                             <Card
+                                onClick={() => handleCardClick(festival.id)} // 클릭 이벤트 추가
                                 style={{
                                     boxShadow: "0px 4px 6px rgba(0,0,0,0.1)",
                                     borderRadius: "8px",
