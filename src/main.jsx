@@ -8,7 +8,7 @@ import HeaderBar from "./components/HeaderBar";
 import MainPage from "./pages/MainPage";
 import SearchPage from "./pages/SerachPage";
 import UserRegistration from "./pages/UserRegistration";
-import { Login } from "@mui/icons-material";
+import  Login  from "./pages/LogIn";
 
 createRoot(document.getElementById("root")).render(
     <StrictMode>

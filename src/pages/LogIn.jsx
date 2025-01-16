@@ -1,6 +1,10 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Login.css"; // CSS 파일 불러오기
+import festivalimg from "../assets/images/불꽃축제.jpg"
+import naver from "../assets/images/네이버.png"
+import kakaotalk from "../assets/images/카카오톡.png"
+import google from "../assets/images/구글.png"
 
 const Login = () => {
   const [username, setUsername] = useState("");
@@ -33,7 +37,7 @@ const Login = () => {
     <div className="login-container">
       <div className="login-content">
         <div className="login-image-container">
-          <img src="/불꽃축제.jpg" alt="로그인 이미지" /> 
+          <img src={festivalimg} alt="로그인 이미지" /> 
         </div>
         <div className="login-form-container">
           <h2>로그인</h2>
@@ -62,12 +66,12 @@ const Login = () => {
             <div className="line"></div>
           </div>
           <div className="social-login-icons">
-            <img src="/naver_icon.png" alt="네이버" />
-            <img src="/kakao_icon.png" alt="카카오톡" />
-            <img src="/google_icon.png" alt="구글" />
+            <img src={naver} alt="네이버" />
+            <img src={kakaotalk} alt="카카오톡" />
+            <img src={google} alt="구글" />
           </div>
           <div className="login-links">
-            <a href="/signup">회원가입</a>
+            <a href="/userregistration">회원가입</a>
           </div>
         </div>
       </div>
