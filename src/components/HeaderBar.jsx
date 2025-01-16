@@ -19,14 +19,14 @@ export default function HeaderBar() {
         return 2;
       case "/mypage":
         return 3;
-      case "/auth":
+      case "/login":
         return 4;
       default:
         return -1; // 메인 페이지 등 기타 경로
     }
   };
 
-  const [value, setValue] = React.useState(getInitialValue);
+  const [value, setValue] = React.useState(getInitialValue());
 
   // URL 경로와 Tabs의 value 상태를 동기화
   React.useEffect(() => {
@@ -43,8 +43,9 @@ export default function HeaderBar() {
       case "/mypage":
         setValue(3);
         break;
-      case "/auth":
+      case "/login":
         setValue(4);
+        console.log("현재 value:",value)
         break;
       default:
         setValue(-1); // 기타 경로
@@ -70,7 +71,7 @@ export default function HeaderBar() {
         navigate("/mypage");
         break;
       case 4:
-        navigate("/userregistration");
+        navigate("/login");
         break;
       default:
         break;
