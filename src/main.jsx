@@ -9,6 +9,7 @@ import MainPage from "./pages/MainPage";
 import SearchPage from "./pages/SerachPage";
 import UserRegistration from "./pages/UserRegistration";
 import  Login  from "./pages/LogIn";
+import CalendarPage from "./pages/CalendarPage";
 
 createRoot(document.getElementById("root")).render(
     <StrictMode>
@@ -19,6 +20,7 @@ createRoot(document.getElementById("root")).render(
                 <Route path="/" element={<MainPage />} />
                 <Route path="/search" element={<SearchPage />} />
                 <Route path="/login" element={<Login/>}/>
+                <Route path="/calendar" element={<CalendarPage/>}/>
                 <Route path="/userregistration" element={<UserRegistration/>}/>
                 <Route path="/festivalDetailPage/:id" element={<FestivalDetailPage />} />
                 <Route path="/festival/:id" element={<FestivalDetailPage />} />

@@ -5,7 +5,8 @@ import CardContent from "@mui/material/CardContent";
 import { Box } from "@mui/material";
 import festivals, { FestivalCards } from "./FestivalData";
 import { useNavigate } from "react-router-dom";
- 
+import { locationMap } from "./locationMap";
+
 export default function MainPage() {
     const [currentIndex, setCurrentIndex] = useState(0); // 슬라이드 시작 인덱스 상태 관리
     const navigate = useNavigate();
@@ -77,7 +78,7 @@ export default function MainPage() {
                                 <CardContent>
                                     <h2 style={{ textAlign: "center" }}>{festival.title}</h2>
                                     <p style={{ textAlign: "center" }}>{festival.date}</p>
-                                    <p style={{ textAlign: "center" }}>{festival.location}</p>
+                                    <p style={{ textAlign: "center" }}>{locationMap[festival.location]}</p>
                                 </CardContent>
                             </Card>
                         </Grid>

@@ -12,9 +12,10 @@ import Button from "@mui/material/Button";
 export default function UserRegistration() {
     // 상태 관리
     const [region, setRegion] = useState(""); // 관심 지역
-    const [name, setName] = useState(""); // 이름
+    const [username, setUsername] = useState(""); // 이름
+    const [useremail,setUseremail] = useState("") //이메일
     const [id, setId] = useState(""); // 아이디
-    const [password, setPassword] = useState(""); // 비밀번호
+    const [pw, setPw] = useState(""); // 비밀번호
     const [confirmPassword, setConfirmPassword] = useState(""); // 비밀번호 확인
     const [errors, setErrors] = useState({}); // 오류 메시지 상태
     const navigate = useNavigate();
@@ -29,11 +30,12 @@ export default function UserRegistration() {
     const handleRegister = () => {
         const newErrors = {};
         {/*정렬해야 함*/}
-        if (!name) newErrors.name = "이름을 입력해주세요";
+        if (!username) newErrors.username = "이름을 입력해주세요";
         if (!id) newErrors.id = "아이디를 입력해주세요";
-        if (!password) newErrors.password = "비밀번호를 입력해주세요";
+        if (!useremail) newErrors.useremail = "이메일을 입력해주세요";
+        if (!pw) newErrors.pw = "비밀번호를 입력해주세요";
         if (!confirmPassword) newErrors.confirmPassword = "비밀번호를 다시 입력해주세요";
-        if (password !== confirmPassword) newErrors.confirmPassword = "비밀번호가 일치하지 않습니다.";
+        if (pw !== confirmPassword) newErrors.confirmPassword = "비밀번호가 일치하지 않습니다.";
         if (!region) newErrors.region = "관심 지역을 선택해주세요";
 
         if (Object.keys(newErrors).length > 0) {
@@ -77,17 +79,34 @@ export default function UserRegistration() {
                 <div style={formRowStyle}>
                     <TextField
                         id="outlined-name"
-                        value={name}
+                        value={username}
                         type="text"
                         placeholder="이름 입력"
                         onChange={(e) => {
-                            setName(e.target.value);
-                            setErrors((prev) => ({ ...prev, name: "" }));
+                            setUsername(e.target.value);
+                            setErrors((prev) => ({ ...prev, username: "" }));
                         }}
-                        error={!!errors.name}
+                        error={!!errors.username}
                         sx={{ width: "300px" }}
                     />
-                    {errors.name && <span style={errorStyle}>{errors.name}</span>}
+                    {errors.username && <span style={errorStyle}>{errors.username}</span>}
+                </div>
+
+                {/*이메일 입력*/}
+                <div style={formRowStyle}>
+                        <TextField 
+                            id = "outloned-name"
+                            value={useremail}
+                            type="text"
+                            placeholder="이메일 입력"
+                            onChange={(e) => {
+                                setUseremail(e.target.value);
+                                setErrors((prev) => ({...prev,useremail: "" }));
+                            }}
+                            error={!!errors.useremail}
+                            sx={{width : "300px"}}
+                        />
+                        {errors.useremail && <span style={errorStyle}>{errors.useremail}</span>}
                 </div>
 
                 {/* 아이디 입력 */}
@@ -113,15 +132,15 @@ export default function UserRegistration() {
                         type="password"
                         autoComplete="current-password"
                         placeholder="비밀번호 입력"
-                        value={password}
+                        value={pw}
                         onChange={(e) => {
-                            setPassword(e.target.value);
-                            setErrors((prev) => ({ ...prev, password: "" }));
+                            setPw(e.target.value);
+                            setErrors((prev) => ({ ...prev, pw: "" }));
                         }}
-                        error={!!errors.password}
+                        error={!!errors.pw}
                         sx={{ width: "300px" }}
                     />
-                    {errors.password && <span style={errorStyle}>{errors.password}</span>}
+                    {errors.pw && <span style={errorStyle}>{errors.pw}</span>}
                 </div>
 
                 {/* 비밀번호 확인 입력 */}
@@ -153,23 +172,23 @@ export default function UserRegistration() {
                             label="관심 지역"
                             onChange={handleRegionChange}
                         >
-                            <MenuItem value={10}>서울특별시</MenuItem>
-                            <MenuItem value={20}>인천광역시</MenuItem>
-                            <MenuItem value={30}>대전광역시</MenuItem>
-                            <MenuItem value={40}>대구광역시</MenuItem>
-                            <MenuItem value={50}>울산광역시</MenuItem>
-                            <MenuItem value={60}>부산광역시</MenuItem>
-                            <MenuItem value={70}>광주광역시</MenuItem>
-                            <MenuItem value={80}>세종특별자치시</MenuItem>
-                            <MenuItem value={90}>경기도</MenuItem>
-                            <MenuItem value={100}>강원도</MenuItem>
-                            <MenuItem value={110}>충청북도</MenuItem>
-                            <MenuItem value={120}>충청남도</MenuItem>
-                            <MenuItem value={130}>전라북도</MenuItem>
-                            <MenuItem value={140}>전라남도</MenuItem>
-                            <MenuItem value={150}>경상북도</MenuItem>
-                            <MenuItem value={160}>경상남도</MenuItem>
-                            <MenuItem value={170}>제주특별자치도</MenuItem>
+                             <MenuItem value={1}>서울특별시</MenuItem>
+                            <MenuItem value={2}>인천광역시</MenuItem>
+                            <MenuItem value={3}>대전광역시</MenuItem>
+                            <MenuItem value={4}>대구광역시</MenuItem>
+                            <MenuItem value={5}>광주광역시</MenuItem>
+                            <MenuItem value={6}>부산광역시</MenuItem>
+                            <MenuItem value={7}>울산광역시</MenuItem>
+                            <MenuItem value={8}>세종특별자치시</MenuItem>
+                            <MenuItem value={31}>경기도</MenuItem>
+                            <MenuItem value={32}>강원도</MenuItem>
+                            <MenuItem value={33}>충청북도</MenuItem>
+                            <MenuItem value={34}>충청남도</MenuItem>
+                            <MenuItem value={35}>전라북도</MenuItem>
+                            <MenuItem value={36}>전라남도</MenuItem>
+                            <MenuItem value={37}>경상북도</MenuItem>
+                            <MenuItem value={38}>경상남도</MenuItem>
+                            <MenuItem value={39}>제주특별자치도</MenuItem>
                         </Select>
                     </FormControl>
                     {errors.region && <span style={errorStyle}>{errors.region}</span>}
