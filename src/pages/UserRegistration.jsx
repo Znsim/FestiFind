@@ -8,6 +8,8 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
+import { registerUser } from "../api/userApi";
+import { Password } from "@mui/icons-material";
 
 export default function UserRegistration() {
     // 상태 관리
@@ -27,14 +29,14 @@ export default function UserRegistration() {
     };
 
     // 회원가입 버튼 클릭 핸들러
-    const handleRegister = () => {
+    const handleRegister = async () => {
         const newErrors = {};
         {/*정렬해야 함*/}
         if (!username) newErrors.username = "이름을 입력해주세요";
         if (!id) newErrors.id = "아이디를 입력해주세요";
         if (!useremail) newErrors.useremail = "이메일을 입력해주세요";
         if (!pw) newErrors.pw = "비밀번호를 입력해주세요";
-        if (!confirmPassword) newErrors.confirmPassword = "비밀번호를 다시 입력해주세요";
+        if (!confirmPassword) newErrors.confirmPassword = "일치하지 않습니다";
         if (pw !== confirmPassword) newErrors.confirmPassword = "비밀번호가 일치하지 않습니다.";
         if (!region) newErrors.region = "관심 지역을 선택해주세요";
 
@@ -43,9 +45,32 @@ export default function UserRegistration() {
             return;
         }
 
-        alert("회원가입 완료!");
-        navigate("/");
+        //api 데이터 보내기기
+       try{
+            const userData = {
+                username,
+                email: useremail,
+                id,
+                password: pw,
+                region,
+            };
+
+            
+            const response = await registerUser(userData);
+            //회원가입 성공했을 경우 이동
+            if(response){
+                console.log("회원가입 성공", response);
+                alert("회원가입 완료");
+                navigate("/");
+            }
+       }
+       catch (error) {
+        console.error("회원가입 실패:", error);
+        alert("회원가입에 실패했습니다.");
+    }
     };
+
+
 
     const formRowStyle = {
         display: "flex",
@@ -61,7 +86,6 @@ export default function UserRegistration() {
         fontSize: "12px",
     };
 
-    
     return (
         <div>
             <Box
