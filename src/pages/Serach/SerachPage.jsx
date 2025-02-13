@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
@@ -6,12 +6,29 @@ import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
-import festivals, { FestivalCards } from "./FestivalData"; // FestivalCards 가져오기
+import festivals, { FestivalCards } from "./SearchFestivalData"; // FestivalCards 가져오기
+import searchFestival from "../../api/serachApi";
 
 export default function SearchPage() {
     const [searchTerm, setSearchTerm] = useState(""); // 검색어 초기 값
-    const [filteredFestivals, setFilteredFestivals] = useState(festivals); // 필터링 처리
+    const [filteredFestivals, setFilteredFestivals] = useState([]); // 필터링 처리
     const [location, setLocation] = useState(""); // 지역 선택 값
+    const [festival,setFestivals] = useState([]); //Api 상태
+
+    //API
+        useEffect(()=>{
+            const getFestivals = async () => {
+                try {
+                    const data = await searchFestival();
+                    console.log("API응답 데이터",data);
+                    setFestivals(data);
+                    filteredFestivals(data);
+                }catch (error) {
+                    console.log("축제 데이터를 불러오는 중 오류 발생 : ",error.message);
+                }
+            };
+            getFestivals();
+        },[]);
 
     // 검색어 변경 처리
     const handleInputChange = (event) => {

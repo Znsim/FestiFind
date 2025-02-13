@@ -5,11 +5,11 @@ import Header from "./components/Header";
 import FestivalDetailPage from "./pages/FestivalDetailPage";
 import "bootstrap/dist/css/bootstrap.min.css";
 import HeaderBar from "./components/HeaderBar";
-import MainPage from "./pages/MainPage";
-import SearchPage from "./pages/SerachPage";
-import UserRegistration from "./pages/UserRegistration";
-import  Login  from "./pages/LogIn";
-import CalendarPage from "./pages/CalendarPage";
+import MainPage from "./pages/Main/MainPage";
+import SearchPage from "./pages/Serach/SerachPage";
+import UserRegistration from "./pages/User/UserRegistration";
+import  Login  from "./pages/User/LogIn";
+import CalendarPage from "./pages/Calendar/CalendarPage";
 
 createRoot(document.getElementById("root")).render(
     <StrictMode>

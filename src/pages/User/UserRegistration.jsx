@@ -8,14 +8,14 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
-import { registerUser } from "../api/userApi";
+import { registerUser } from "../../api/userApi";
 import { Password } from "@mui/icons-material";
 
 export default function UserRegistration() {
     // 상태 관리
     const [region, setRegion] = useState(""); // 관심 지역
     const [username, setUsername] = useState(""); // 이름
-    const [useremail,setUseremail] = useState("") //이메일
+    const [email,setEmail] = useState("") //이메일
     const [id, setId] = useState(""); // 아이디
     const [pw, setPw] = useState(""); // 비밀번호
     const [confirmPassword, setConfirmPassword] = useState(""); // 비밀번호 확인
@@ -34,7 +34,7 @@ export default function UserRegistration() {
         {/*정렬해야 함*/}
         if (!username) newErrors.username = "이름을 입력해주세요";
         if (!id) newErrors.id = "아이디를 입력해주세요";
-        if (!useremail) newErrors.useremail = "이메일을 입력해주세요";
+        if (!email) newErrors.email = "이메일을 입력해주세요";
         if (!pw) newErrors.pw = "비밀번호를 입력해주세요";
         if (!confirmPassword) newErrors.confirmPassword = "일치하지 않습니다";
         if (pw !== confirmPassword) newErrors.confirmPassword = "비밀번호가 일치하지 않습니다.";
@@ -49,9 +49,9 @@ export default function UserRegistration() {
        try{
             const userData = {
                 username,
-                email: useremail,
+                email,
                 id,
-                password: pw,
+                pw,
                 region,
             };
 
@@ -120,17 +120,17 @@ export default function UserRegistration() {
                 <div style={formRowStyle}>
                         <TextField 
                             id = "outloned-name"
-                            value={useremail}
+                            value={email}
                             type="text"
                             placeholder="이메일 입력"
                             onChange={(e) => {
-                                setUseremail(e.target.value);
-                                setErrors((prev) => ({...prev,useremail: "" }));
+                                setEmail(e.target.value);
+                                setErrors((prev) => ({...prev,email: "" }));
                             }}
-                            error={!!errors.useremail}
+                            error={!!errors.email}
                             sx={{width : "300px"}}
                         />
-                        {errors.useremail && <span style={errorStyle}>{errors.useremail}</span>}
+                        {errors.email && <span style={errorStyle}>{errors.email}</span>}
                 </div>
 
                 {/* 아이디 입력 */}

@@ -9,3 +9,5 @@ export const fetchMainPageData = async () => {
         throw error;
     }
 };
+
+export default fetchMainPageData

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
-import festivals from "./FestivalData";
+import festivals from "./Serach/SearchFestivalData";
 import { locationMap } from "./locationMap";
 import { CardMedia, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material";
 import Rating from "@mui/material/Rating"; // 별점 컴포넌트
