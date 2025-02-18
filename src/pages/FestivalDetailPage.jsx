@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
-import festivals from "./Serach/SearchFestivalData";
+import festivals from "./Main/MainFestivalData";
 import { locationMap } from "./locationMap";
 import { CardMedia, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material";
-import Rating from "@mui/material/Rating"; // 별점 컴포넌트
+import Rating from "@mui/material/Rating";
 import EditIcon from "@mui/icons-material/Edit";
 import StarIcon from "@mui/icons-material/Star";
 import StarBorderIcon from "@mui/icons-material/StarBorder";

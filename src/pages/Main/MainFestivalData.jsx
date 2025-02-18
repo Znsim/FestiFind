@@ -1,12 +1,13 @@
+//메인페이지 10개 정보가 뜸... 이러면 안돼! 멈춰! 
+
 import React from "react";
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
-import { useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 import Tooltip from "@mui/material/Tooltip";
 import {fetchMainPageData} from "../../api/mainPageApi";
 import { useState,useEffect } from "react";
-
 
 const MAX_TITLE_LENGTH = 20;
 
@@ -17,19 +18,18 @@ export function FestivalCards({ filteredFestivals }) {
     const [festivals, setFestivals] = useState([]); //API 데이터 상태
 
     //API
-    useEffect(()=>{
+    useEffect(() => {
         const getFestivals = async () => {
             try {
-                const data = await fetchMainPageData();
-                console.log("API응답 데이터",data);
-                setFestivals(data);
-            }catch (error) {
-                console.log("축제 데이터를 불러오는 중 오류 발생 : ",error.message);
+                const data = await fetchMainPageData({}); // API 호출
+                setFestivals(data); // 받아온 데이터를 상태에 저장
+            } catch (error) {
+                console.error("축제 데이터를 불러오는 중 오류 발생:", error.message);
             }
         };
-        getFestivals();
-    },[]);
 
+        getFestivals();
+    }, []);
 
     const handleLogoClick = (id) => {
         navigate(`/festivalDetailPage/${id}`); // ID를 경로에 포함
@@ -45,7 +45,7 @@ export function FestivalCards({ filteredFestivals }) {
                 return (
                 <Grid item xs={12} sm={6} md={4} key={festival.id}>
                     <Card
-                        onClick={() => handleLogoClick(festival.idcontent)} // ID 전달
+                        onClick={() => handleLogoClick(festival?.idcontent)} // ID 전달
                         style={{
                             boxShadow: "0px 4px 6px rgba(0,0,0,0.1)",
                             borderRadius: "8px",
@@ -68,7 +68,7 @@ export function FestivalCards({ filteredFestivals }) {
                                         {truncatedTitle}
                                     </h2>
                                 </Tooltip>
-                            <p>{festival.eventstartdate} ~ {festival.eventenddate}</p>
+                            <p>{festival.eventStartDate} ~ {festival.eventEndDate}</p>
                             <p>{festival.addr1}</p>
                         </CardContent>
                     </Card>

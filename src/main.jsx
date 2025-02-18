@@ -7,7 +7,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import HeaderBar from "./components/HeaderBar";
 import MainPage from "./pages/Main/MainPage";
 import SearchPage from "./pages/Serach/SerachPage";
-import UserRegistration from "./pages/User/UserRegistration";
+import Signup from "./pages/User/Signup";
 import  Login  from "./pages/User/LogIn";
 import CalendarPage from "./pages/Calendar/CalendarPage";
 
@@ -21,7 +21,7 @@ createRoot(document.getElementById("root")).render(
                 <Route path="/search" element={<SearchPage />} />
                 <Route path="/login" element={<Login/>}/>
                 <Route path="/calendar" element={<CalendarPage/>}/>
-                <Route path="/userregistration" element={<UserRegistration/>}/>
+                <Route path="/signup" element={<Signup/>}/>
                 <Route path="/festivalDetailPage/:id" element={<FestivalDetailPage />} />
                 <Route path="/festival/:id" element={<FestivalDetailPage />} />
             </Routes>
