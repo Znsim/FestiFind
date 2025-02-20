@@ -14,3 +14,14 @@ export const registerUser = async (userData) => {
         throw error;
     }
 };
+
+// ✅ 로그인 API
+export const loginUser = async (userData) => {
+    try {
+        const response = await api.post("/user/login", userData);
+        return response.data;
+    } catch (error) {
+        console.error("로그인 실패:", error.response?.data || error.message);
+        throw error;
+    }
+};
