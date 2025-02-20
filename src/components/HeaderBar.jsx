@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import SearchIcon from "@mui/icons-material/Search";
@@ -7,29 +7,11 @@ import { useNavigate, useLocation } from "react-router-dom";
 export default function HeaderBar() {
   const navigate = useNavigate();
   const location = useLocation();
+  const [value, setValue] = useState(-1);
+  const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("token")); // 로그인 상태 확인
 
-  // 초기 상태를 URL 경로에 따라 설정
-  const getInitialValue = () => {
-    switch (location.pathname) {
-      case "/search":
-        return 0;
-      case "/calendar":
-        return 1;
-      case "/map":
-        return 2;
-      case "/mypage":
-        return 3;
-      case "/login":
-        return 4;
-      default:
-        return -1; // 메인 페이지 등 기타 경로
-    }
-  };
-
-  const [value, setValue] = React.useState(getInitialValue());
-
-  // URL 경로와 Tabs의 value 상태를 동기화
-  React.useEffect(() => {
+  // 초기 value 설정
+  useEffect(() => {
     switch (location.pathname) {
       case "/search":
         setValue(0);
@@ -45,36 +27,35 @@ export default function HeaderBar() {
         break;
       case "/login":
         setValue(4);
-        console.log("현재 value:",value)
+        break;
+      case "/signup":
+        setValue(5);
         break;
       default:
-        setValue(-1); // 기타 경로
+        setValue(-1);
         break;
     }
+    setIsLoggedIn(!!localStorage.getItem("token")); // 로그인 상태 갱신
   }, [location.pathname]);
 
   // 탭 변경 시 경로 이동
   const handleChange = (event, newValue) => {
     setValue(newValue);
 
-    switch (newValue) {
-      case 0:
-        navigate("/search", { replace: true }); // 강제 이동
-        break;
-      case 1:
-        navigate("/calendar");
-        break;
-      case 2:
-        navigate("/map");
-        break;
-      case 3:
-        navigate("/mypage");
-        break;
-      case 4:
+    if (newValue === 4) {
+      if (isLoggedIn) {
+        // 로그아웃 처리
+        localStorage.removeItem("token");
+        setIsLoggedIn(false);
         navigate("/login");
-        break;
-      default:
-        break;
+      } else {
+        navigate("/login");
+      }
+    } else if (newValue === 5) {
+      navigate("/signup");
+    } else {
+      const paths = ["/search", "/calendar", "/map", "/mypage"];
+      navigate(paths[newValue]);
     }
   };
 
@@ -89,7 +70,7 @@ export default function HeaderBar() {
       }}
     >
       <Tabs
-        value={value === -1 ? false : value} // -1인 경우 탭 선택 해제
+        value={value === -1 ? false : value}
         onChange={handleChange}
         aria-label="navigation tabs"
         centered
@@ -98,7 +79,8 @@ export default function HeaderBar() {
         <Tab label="캘린더" />
         <Tab label="지도" />
         <Tab label="마이페이지" />
-        <Tab label="로그인/회원가입" />
+        <Tab label={isLoggedIn ? "로그아웃" : "로그인"} /> {/* 로그인 상태에 따라 변경 */}
+        <Tab label="회원가입" />
       </Tabs>
     </div>
   );
