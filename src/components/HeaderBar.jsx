@@ -41,10 +41,10 @@ export default function HeaderBar() {
   // 탭 변경 시 경로 이동
   const handleChange = (event, newValue) => {
     setValue(newValue);
-
+  
     if (newValue === 4) {
       if (isLoggedIn) {
-        // 로그아웃 처리
+        // ✅ 로그아웃 처리
         localStorage.removeItem("token");
         setIsLoggedIn(false);
         navigate("/login");
@@ -55,9 +55,18 @@ export default function HeaderBar() {
       navigate("/signup");
     } else {
       const paths = ["/search", "/calendar", "/map", "/mypage"];
+  
+      // ✅ 마이페이지 클릭 시 로그인 체크
+      if (newValue === 3 && !isLoggedIn) {
+        alert("로그인이 필요한 페이지입니다.");
+        navigate("/login");
+        return;
+      }
+  
       navigate(paths[newValue]);
     }
   };
+  
 
   return (
     <div
