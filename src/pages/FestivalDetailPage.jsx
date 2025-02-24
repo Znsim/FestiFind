@@ -1,160 +1,190 @@
-import React, { useState } from "react";
-import { useParams } from "react-router-dom";
-import festivals from "./Main/MainFestivalData";
-import { locationMap } from "./locationMap";
-import { CardMedia, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material";
-import Rating from "@mui/material/Rating";
-import EditIcon from "@mui/icons-material/Edit";
-import StarIcon from "@mui/icons-material/Star";
-import StarBorderIcon from "@mui/icons-material/StarBorder";
-import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
-import NotificationsIcon from "@mui/icons-material/Notifications";
-import Input from '@mui/material/Input';
+import React, { useState, useEffect } from "react";
+import { useParams, useLocation } from "react-router-dom";
+import { festivalDetailPageApi } from "../api/festivalDetailsApi";
+import PropTypes from 'prop-types';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+import Box from '@mui/material/Box';
+import "./FestivalDetailPage.css";
 
+//icon
+import PlaceIcon from '@mui/icons-material/Place';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import PublicIcon from '@mui/icons-material/Public';
+import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
+import BusinessIcon from '@mui/icons-material/Business';
+import FeedIcon from '@mui/icons-material/Feed';
+import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
+import SentimentSatisfiedAltIcon from '@mui/icons-material/SentimentSatisfiedAlt';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import DiscountIcon from '@mui/icons-material/Discount';
+import GradeIcon from '@mui/icons-material/Grade';
+import PlusOneIcon from '@mui/icons-material/PlusOne';
+import TimerIcon from '@mui/icons-material/Timer';
+import NoteIcon from '@mui/icons-material/Note';
+
+function CustomTabPanel(props) {
+    const { children, value, index, ...other } = props;
+  
+    return (
+      <div
+        role="tabpanel"
+        hidden={value !== index}
+        id={`simple-tabpanel-${index}`}
+        aria-labelledby={`simple-tab-${index}`}
+        {...other}
+      >
+        {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
+      </div>
+    );
+  }
+  
+  CustomTabPanel.propTypes = {
+    children: PropTypes.node,
+    index: PropTypes.number.isRequired,
+    value: PropTypes.number.isRequired,
+  };
+  
+  function a11yProps(index) {
+    return {
+      id: `simple-tab-${index}`,
+      'aria-controls': `simple-tabpanel-${index}`,
+    };
+  }
 
 export default function FestivalDetailPage() {
-    const { id } = useParams(); // URL에서 id 가져오기
-    const festival = festivals.find((f) => f.id === parseInt(id, 10)); // id로 데이터 찾기
+    const { contentId, contentTypeId } = useParams();
+    const safeType = parseInt(contentTypeId, 10) || 12;
+    const location = useLocation();
+    const { title: stateTitle, image } = location.state || {};
+    const [value, setValue] = React.useState(0);
+    const [detail, setDetail] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false); // 이미지 확대 모달 상태
 
-    if (!festival) {
-        return <p>축제를 찾을 수 없습니다.</p>;
-    }
+    useEffect(() => {
+        if (!contentId) return;
 
-    const [isFavorite, setIsFavorite] = useState(false); // 즐겨찾기 상태
-    const [isNotified, setIsNotified] = useState(false); // 알림 설정 상태
-    const [isDialogOpen, setIsDialogOpen] = useState(false); // 모달 상태
-    const [review, setReview] = useState(""); // 리뷰 내용
-    const [rating, setRating] = useState(0); // 별점 상태
-    const [inputCount, setInputCount] = useState(0); //글자
+        const getDetail = async () => {
+            setLoading(true);
+            try {
+                const params = {
+                    contentId: parseInt(contentId, 10),
+                    contentTypeId: safeType,
+                };
 
-    // 리뷰 작성 모달 열기/닫기
-    const handleDialogOpen = () => setIsDialogOpen(true);
-    const handleDialogClose = () => setIsDialogOpen(false);
+                const data = await festivalDetailPageApi(params);
+                if (!data) throw new Error("API 응답에 정보가 없습니다.");
 
-    // 즐겨찾기 토글
-    const toggleFavorite = () => {
-        setIsFavorite((prev) => !prev);
-    };
+                const correctDetail = Array.isArray(data)
+                    ? data.find(item => item.contentid === parseInt(contentId, 10))
+                    : data;
 
-    // 알림 설정 토글
-    const toggleNotification = () => {
-        setIsNotified((prev) => !prev);
-    };
+                if (!correctDetail) throw new Error("해당 contentId에 대한 정보를 찾을 수 없습니다.");
 
-    // 리뷰 저장
-    const handleReviewSave = () => {
-        console.log("Review:", review); // 리뷰 저장 처리
-        console.log("Rating:", rating); // 별점 저장 처리
-        setReview(""); // 리뷰 초기화
-        setRating(0); // 별점 초기화
-        handleDialogClose(); // 모달 닫기
-    };
+                correctDetail.contenttypeid = correctDetail.contenttypeid || safeType;
+                setDetail(correctDetail);
+            } catch (error) {
+                setError(error.message);
+            } finally {
+                setLoading(false);
+            }
+        };
 
-    //글자 수 제한
-    const onInputHandler = (e) => {
-      setInputCount(e.target.value.length);
-    };
+        getDetail();
+    }, [contentId, safeType]);
+
+    const handleChange = (event, newValue) => {
+        setValue(newValue);
+      };
+
+    if (loading) return <p>상세 정보를 불러오는 중입니다...</p>;
+    if (error) return <p>오류 발생: {error}</p>;
 
     return (
-        <div style={{ display: "flex", flexDirection: "row", height: "100vh", overflow: "hidden" }}>
-            {/* 이미지와 아이콘 영역 */}
-            <div style={{ flex: 1, position: "sticky", top: "20px", alignSelf: "flex-start" }}>
-            <CardMedia
-                component="img"
-                image={festival.image}
-                alt={festival.title}
-                style={{
-                    width: "100%",
-                    height: "auto",
-                    maxHeight: "400px", // 원하는 최대 높이 설정
-                    objectFit: "contain", // 이미지를 축소하여 영역 안에 맞추기
-                    marginBottom: "20px",
-                }}
-            />
-                {/* 버튼 영역 */}
-                <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "30px", marginTop: "10px" }}>
-                    {/* 리뷰 작성 버튼 */}
-                    <div
-                        style={{ display: "flex", flexDirection: "column", alignItems: "center", cursor: "pointer" }}
-                        onClick={handleDialogOpen}
-                    >
-                        <EditIcon fontSize="large" />
-                        <span>리뷰 작성</span>
-                    </div>
+        <div className="header">
+            <div className="festival-container">
+                {/* 이미지 영역 */}
+                <div className="festival-image-container">
+                    {image ? (
+                        <>
+                            <img 
+                                src={image} 
+                                alt={stateTitle || "축제 이미지"} 
+                                className="festival-image"
+                                onClick={() => setIsModalOpen(true)} // 클릭하면 모달 열림
+                            />
 
-                    {/* 즐겨찾기 버튼 */}
-                    <div
-                        style={{ display: "flex", flexDirection: "column", alignItems: "center", cursor: "pointer" }}
-                        onClick={toggleFavorite}
-                    >
-                        {isFavorite ? <StarIcon fontSize="large" style={{ color: "gold" }} /> : <StarBorderIcon fontSize="large" />}
-                        <span>즐겨찾기</span>
-                    </div>
+                            {/* 모달 창 */}
+                            {isModalOpen && (
+                                <div className="modal" onClick={() => setIsModalOpen(false)}>
+                                    <span className="modal-close">&times;</span>
+                                    <img src={image} alt="확대된 축제 이미지" />
+                                </div>
+                            )}
+                        </>
+                    ) : (
+                        <p>이미지 없음</p>
+                    )}
+                </div>
 
-                    {/* 알림 설정 버튼 */}
-                    <div
-                        style={{ display: "flex", flexDirection: "column", alignItems: "center", cursor: "pointer" }}
-                        onClick={toggleNotification}
-                    >
-                        {isNotified ? <NotificationsIcon fontSize="large" style={{ color: "red" }} /> : <NotificationsNoneIcon fontSize="large" />}
-                        <span>알림설정</span>
+                {/* 축제 상세 정보 영역 */}
+                <div className="festival-info">
+                    {/* 제목 (빨간 상자 위) */}
+                    <h1 className="festival-title">{stateTitle || (detail ? detail.title : "정보 없음")}</h1>
+
+                    {/* 빨간 상자 안의 상세 정보 */}
+                    <div className="info-box">
+                        {parseInt(safeType, 10) === 15 && (
+                            <>
+                             <Box sx={{ width: '100%' }}>
+                                <Box sx={{ width: '100%', height: '100%' }} className="festival-tabs-container">
+                                    <Box sx={{ borderBottom: 1, borderColor: 'divider', width: '100%' }}>
+                                        <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" variant="fullWidth">
+                                            <Tab label="기본 정보" {...a11yProps(0)} />
+                                            <Tab label="주최 및 기관" {...a11yProps(1)} />
+                                            <Tab label="행사 정보" {...a11yProps(2)} />
+                                            <Tab label="방문 정보" {...a11yProps(3)} />
+                                        </Tabs>
+                                    </Box>
+                                </Box>
+
+
+
+                                <CustomTabPanel value={value} index={0}>
+                                <p><strong><CalendarMonthIcon/> 축제 기간 : </strong> {detail.eventstartdate || "미정"} ~ {detail.eventenddate || "미정"}</p>
+                                <p><strong><PlaceIcon/> 장소 : </strong> {detail.eventplace || "정보 없음"}</p>
+                                <p><strong><PublicIcon/> 행사 홈페이지 : </strong> {detail.eventhomepage || "정보 없음"}</p>
+                                <p><strong><ConfirmationNumberIcon/> 입장료 : </strong> {detail.usetimefestival || "무료"}</p>
+                                </CustomTabPanel>
+                                <CustomTabPanel value={value} index={1}>
+                                <p><strong><BusinessIcon/> 주최 : </strong> {detail.sponsor1 || "정보 없음"} / {detail.sponsor2 || "정보 없음"}</p>
+                                <p><strong><FeedIcon/> 주최자 정보 : </strong>{detail.sponsor1 || "정보 없음"}</p>
+                                <p><strong><LocalPhoneIcon/> 주최자 연락처 : </strong>{detail.sponsor1tel || "정보 없음"}</p>
+                                <p><strong><FeedIcon/> 주관사 정보 : </strong>{detail.sponsor2 || "정보 없음"}</p>
+                                <p><strong><LocalPhoneIcon/> 주관사 연락처 : </strong>{detail.sponsor2tel || "정보 없음"}</p>
+                                </CustomTabPanel>
+                                <CustomTabPanel value={value} index={2}>
+                                <p><strong> <SentimentSatisfiedAltIcon/> 행사 프로그램 : </strong>{detail.program || "정보 없음"}</p>
+                                <p><strong> <AccessTimeIcon/> 공연시간 : </strong>{detail.playtime || "정보 없음"}</p>
+                                <p><strong><PlaceIcon/> 행사장 위치 : </strong>{detail.palceinfo || "정보 없음"}</p>
+                                <p><strong><DiscountIcon/> 할인 정보 : </strong> {detail.discountinfofestival || "정보 없음"}</p>
+                                <p><strong><GradeIcon/> 축제 등급 : </strong>{detail.festivalgrade || "정보 없음"}</p>
+                                </CustomTabPanel> 
+                                <CustomTabPanel value={value} index={3}>
+                                <p><strong><PlusOneIcon/> 관람 연령 : </strong> {detail.agelimit || "정보 없음"}</p>
+                                <p><strong><TimerIcon/> 관람소요시간 : </strong>{detail.spendtimefestival || "정보 없음"}</p>
+                                <p><strong><NoteIcon/> 부대행사 : </strong>{detail.subevent || "정보 없음"}</p>
+                                </CustomTabPanel>
+                                </Box>
+                              
+                               
+                            </>
+                        )}
                     </div>
                 </div>
             </div>
-
-            {/* 설명 영역 */}
-            <div style={{ flex: 2, padding: "20px", overflowY: "auto" }}>
-                <h2>{festival.title}</h2>
-                <p>{festival.date}</p>
-                <p>{locationMap[festival.location]}</p> {/* 지역 텍스트 출력 */}
-                <p>{festival.adress}</p>
-                <p>{festival.outline}</p>
-                <p>{festival.Event_introduction}</p>
-                <p>{festival.Event_details}</p>
-            </div>
-
-            {/* 리뷰 작성 모달 */}
-            <Dialog open={isDialogOpen} onClose={handleDialogClose}>
-                <DialogContent>
-                    {/* 별점 */}
-                    <div style={{ marginBottom: "20px", textAlign: "center" }}>
-                        <Rating
-                            name="festival-rating"
-                            value={rating}
-                            onChange={(e, newValue) => setRating(newValue)}
-                            precision={0.5} // 별점을 0.5 단위로 설정
-                        />
-                    </div>
-
-                    {/* 리뷰 입력 */}
-                    <Input onChange={onInputHandler} maxLength ="30"/>
-                    <TextField
-                        fullWidth
-                        multiline
-                        rows={4}
-                        variant="outlined"
-                        placeholder="여기에 리뷰를 작성하세요."
-                        value={review}
-                        onChange={(e) => {
-                          const inputValue = e.target.value;
-                          if (inputValue.length <= 30) { // 30자를 초과하지 않도록 제한
-                              setReview(inputValue);
-                              setInputCount(inputValue.length);
-                          }
-                        }}
-                        inputProps={{ maxLength: 30 }} // 최대 글자 수 제한
-                    />
-                    <div style={{ textAlign: "right" }}>
-                        <span>{inputCount}</span>/<span>30 자</span>
-                    </div>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleDialogClose}>취소</Button>
-                    <Button onClick={handleReviewSave} variant="contained">
-                        저장
-                    </Button>
-                </DialogActions>
-            </Dialog>
         </div>
     );
 }

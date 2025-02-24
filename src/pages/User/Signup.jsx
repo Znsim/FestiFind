@@ -101,11 +101,11 @@ export default function UserRegistration() {
                 <div className="signup-form-container">
                     <h2>회원가입</h2>
                     <div className="signup-grid">
-                        <div className="input-wrapper">
-                            <input type="text" className={`signup-input ${errors.username ? "error-border" : ""}`} 
-                                   value={username} onChange={(e) => setUsername(e.target.value)}
-                                   placeholder="이름 입력" />
-                            {errors.username && <div className="error-text">{errors.username}</div>}
+                    <div className="input-wrapper">
+                            <input type="text" className={`signup-input ${errors.id ? "error-border" : ""}`} 
+                                   value={id} onChange={(e) => setId(e.target.value)}
+                                   placeholder="아이디 입력" />
+                            {errors.id && <div className="error-text">{errors.id}</div>}
                         </div>
                         <div className="input-wrapper">
                             <input type="text" className={`signup-input ${errors.email ? "error-border" : ""}`} 
@@ -113,12 +113,7 @@ export default function UserRegistration() {
                                    placeholder="이메일 입력" />
                             {errors.email && <div className="error-text">{errors.email}</div>}
                         </div>
-                        <div className="input-wrapper">
-                            <input type="text" className={`signup-input ${errors.id ? "error-border" : ""}`} 
-                                   value={id} onChange={(e) => setId(e.target.value)}
-                                   placeholder="아이디 입력" />
-                            {errors.id && <div className="error-text">{errors.id}</div>}
-                        </div>
+                       
                         <div className="input-wrapper">
                             <input type="password" className={`signup-input ${errors.pw ? "error-border" : ""}`} 
                                    value={pw} onChange={(e) => setPw(e.target.value)}
@@ -130,6 +125,12 @@ export default function UserRegistration() {
                                    value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)}
                                    placeholder="비밀번호 확인" />
                             {errors.confirmPassword && <div className="error-text">{errors.confirmPassword}</div>}
+                        </div>
+                        <div className="input-wrapper">
+                            <input type="text" className={`signup-input ${errors.username ? "error-border" : ""}`} 
+                                   value={username} onChange={(e) => setUsername(e.target.value)}
+                                   placeholder="이름 입력" />
+                            {errors.username && <div className="error-text">{errors.username}</div>}
                         </div>
                         <div className="input-wrapper">
                             <select className="signup-input" value={region} onChange={handleRegionChange}>

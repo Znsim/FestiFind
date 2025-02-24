@@ -10,20 +10,20 @@ import SearchPage from "./pages/Serach/SerachPage";
 import Signup from "./pages/User/Signup";
 import  Login  from "./pages/User/LogIn";
 import CalendarPage from "./pages/Calendar/CalendarPage";
-
 createRoot(document.getElementById("root")).render(
     <StrictMode>
         <Router>
             <Header />
             <HeaderBar />
             <Routes>
-                <Route path="/" element={<MainPage />} />
+                <Route path="/" element={<MainPage/>} />
                 <Route path="/search" element={<SearchPage />} />
                 <Route path="/login" element={<Login/>}/>
                 <Route path="/calendar" element={<CalendarPage/>}/>
                 <Route path="/signup" element={<Signup/>}/>
-                <Route path="/festivalDetailPage/:id" element={<FestivalDetailPage />} />
+                <Route path="/festivalDetailPage/:contentId/:contentTypeId" element={<FestivalDetailPage />} />
                 <Route path="/festival/:id" element={<FestivalDetailPage />} />
+                
             </Routes>
         </Router>
     </StrictMode>

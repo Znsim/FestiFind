@@ -1,0 +1,49 @@
+.festival-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 100%;
+    min-height: 250px;
+    max-height: 350px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.festival-card img,
+.festival-card .placeholder {
+    width: 100%;
+    height: 150px; /* 이미지와 동일한 높이 */
+    object-fit: cover;
+}
+
+.festival-card .placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #d3d3d3; /* 연한 회색 */
+    font-size: 14px;
+    color: #666;
+    font-weight: bold;
+}
+
+.festival-card .festival-content {
+    padding: 10px;
+    text-align: center;
+}
+
+.festival-card h2 {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    font-size: 1.2rem;
+}
+
+.festival-card p {
+    margin: 5px 0;
+    font-size: 0.9rem;
+    color: #666;
+}

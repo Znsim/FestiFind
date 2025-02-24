@@ -17,7 +17,7 @@
     display: flex;
     justify-content: center;
     align-items: stretch; /* 세로를 컨테이너 높이에 맞춤 */
-    width: 65%; /* 가로 크기를 로그인과 동일하게 */
+    width: 80%; /* 가로 크기를 로그인과 동일하게 */
     max-width: 1200px; /* 최대 너비 설정 */
     height: 55%; /* 로그인 폼과 동일한 높이 */
     gap: 0; /* 이미지와 폼 간격 제거 */
@@ -30,7 +30,7 @@
 
 /* 이미지 컨테이너 */
 .signup-image-container {
-    flex: 0.9; /* 로그인과 동일한 비율 */
+    flex: 1.5; /* 로그인과 동일한 비율 */
     display: flex;
     justify-content: center;
     align-items: center;

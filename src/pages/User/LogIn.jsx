@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Login.css";
-import festivalimg from "../assets/images/불꽃축제.jpg";
-import naver from "../assets/images/네이버.png";
-import kakaotalk from "../assets/images/카카오.png";
-import google from "../assets/images/구글.png";
-import { loginUser } from "../api/userApi"// ✅ userApi에서 로그인 함수 가져오기
+import festivalimg from "../../assets/images/불꽃축제.jpg";
+
+import naver from "../../assets/images/네이버.png";
+import kakaotalk from "../../assets/images/카카오.png";
+import google from "../../assets/images/구글.png";
+import { loginUser } from "../../api/userApi"// ✅ userApi에서 로그인 함수 가져오기
 
 const KAKAO_REST_API_KEY = import.meta.env.VITE_KAKAO_REST_API_KEY;
 const KAKAO_REDIRECT_URI = "http://localhost:5173/authkakao";

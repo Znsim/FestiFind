@@ -13,7 +13,8 @@ import { locationMap } from "../locationMap";
 export default function SearchPage() {
     const [searchTerm, setSearchTerm] = useState(""); 
     const [filteredFestivals, setFilteredFestivals] = useState([]); 
-    const [location, setLocation] = useState(""); 
+    const [location, setLocation] = useState("0"); 
+    const [contentTypeId, setContentTypeId] = useState("15"); // 기본값 설정
     const [festival, setFestivals] = useState([]); 
 
     useEffect(() => {
@@ -40,40 +41,35 @@ export default function SearchPage() {
 
     const handleSearch = async () => {
         try {
-            const data = await searchFestival({ 
-                keyword: searchTerm || "",  // 검색어가 없으면 빈 문자열
-                areaCode: location || "",   // 지역 코드 추가
-                contentTypeId: "15",        // 기본 축제 유형 (15: 축제·공연·행사)
+            const requestData = { 
+                keyword: searchTerm && searchTerm.trim() !== "" ? searchTerm : undefined,  
+                areaCode: location || undefined,  
+                contentTypeId: contentTypeId || "15",  // 사용자가 선택한 contentTypeId 반영
                 numOfRows: 20,              
-                pageNo: 1,
-                arrange: "O" // 제목순 정렬
-            });
-            setFilteredFestivals(data);
-        } catch (error) {
-            console.error("검색 요청 실패:", error);
-        }
-    };
-    
-
-    const handleLocationChange = async (event) => {
-        const selectedLocation = event.target.value;
-        setLocation(selectedLocation);
-        
-        try {
-            const data = await searchFestival({ 
-                keyword: searchTerm || "",  
-                areaCode: locationMap[selectedLocation] ? selectedLocation : null, // 지역 코드 변환
-                contentTypeId: "15",  
-                numOfRows: 20, 
-                pageNo: 1,
+                pageNo: 1,  
                 arrange: "O"
-            });
+            };
+    
+            console.log("보내는 요청 데이터:", requestData);  // 디버깅용 콘솔 출력
+    
+            const data = await searchFestival(requestData);
             setFilteredFestivals(data);
         } catch (error) {
-            console.error("지역 검색 실패:", error);
+            console.error("검색 요청 실패:", error.response?.data || error.message);
         }
     };
     
+    const handleLocationChange = (event) => {
+        setLocation(event.target.value);
+    };
+
+    const handleContentTypeChange = (event) => {
+        setContentTypeId(event.target.value);
+    };
+
+    useEffect(() => {
+        handleSearch();
+    }, [location, contentTypeId]); // location, contentTypeId가 변경될 때 검색 실행
 
     return (
         <div style={{ padding: "20px" }}>
@@ -82,25 +78,39 @@ export default function SearchPage() {
                 <Select
                     value={location}
                     label="지역"
-                    onChange={handleLocationChange}
+                    onChange={handleLocationChange} // 지역 선택 시 업데이트
                 >
-                    <MenuItem value="서울특별시">서울특별시</MenuItem>
-                    <MenuItem value="인천광역시">인천광역시</MenuItem>
-                    <MenuItem value="대전광역시">대전광역시</MenuItem>
-                    <MenuItem value="대구광역시">대구광역시</MenuItem>
-                    <MenuItem value="광주광역시">광주광역시</MenuItem>
-                    <MenuItem value="부산광역시">부산광역시</MenuItem>
-                    <MenuItem value="울산광역시">울산광역시</MenuItem>
-                    <MenuItem value="세종특별자치시">세종특별자치시</MenuItem>
-                    <MenuItem value="경기도">경기도</MenuItem>
-                    <MenuItem value="강원도">강원도</MenuItem>
-                    <MenuItem value="충청북도">충청북도</MenuItem>
-                    <MenuItem value="충청남도">충청남도</MenuItem>
-                    <MenuItem value="전라북도">전라북도</MenuItem>
-                    <MenuItem value="전라남도">전라남도</MenuItem>
-                    <MenuItem value="경상북도">경상북도</MenuItem>
-                    <MenuItem value="경상남도">경상남도</MenuItem>
-                    <MenuItem value="제주특별자치도">제주특별자치도</MenuItem>
+                    <MenuItem value="0">전체</MenuItem>
+                    <MenuItem value="1">서울특별시</MenuItem>
+                    <MenuItem value="2">인천광역시</MenuItem>
+                    <MenuItem value="3">대전광역시</MenuItem>
+                    <MenuItem value="4">대구광역시</MenuItem>
+                    <MenuItem value="5">광주광역시</MenuItem>
+                    <MenuItem value="6">부산광역시</MenuItem>
+                    <MenuItem value="7">울산광역시</MenuItem>
+                    <MenuItem value="8">세종특별자치시</MenuItem>
+                    <MenuItem value="31">경기도</MenuItem>
+                    <MenuItem value="32">강원도</MenuItem>
+                    <MenuItem value="33">충청북도</MenuItem>
+                    <MenuItem value="34">충청남도</MenuItem>
+                    <MenuItem value="35">전라북도</MenuItem>
+                    <MenuItem value="36">전라남도</MenuItem>
+                    <MenuItem value="37">경상북도</MenuItem>
+                    <MenuItem value="38">경상남도</MenuItem>
+                    <MenuItem value="39">제주특별자치도</MenuItem>
+                </Select>
+            </FormControl>
+
+            <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
+                <InputLabel>타입</InputLabel>
+                <Select
+                    value={contentTypeId}
+                    label="타입"
+                    onChange={handleContentTypeChange} // 컨텐츠 타입 선택 시 업데이트
+                >
+                    <MenuItem value="12">관광지</MenuItem>
+                    <MenuItem value="14">문화시설</MenuItem>
+                    <MenuItem value="15">행사/공연/축제</MenuItem>
                 </Select>
             </FormControl>
 
@@ -134,3 +144,12 @@ export default function SearchPage() {
         </div>
     );
 }
+
+/**
+ * 키워드
+ * 지역 코드
+ * 축제 유형
+ * 검색 키워드
+ * pageNo
+ * aeeange 정렬방식 : 제목순, 생성일순순
+ */

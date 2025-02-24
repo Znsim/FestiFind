@@ -18,7 +18,7 @@ export default function MainPage() {
         const getFestivals = async () => {
             try {
                 const data = await fetchMainPageData();
-                console.log("API응답 데이터", data);
+                console.log("API 응답 데이터", data);
                 setFestival(data);
             } catch (error) {
                 console.log("축제 데이터를 불러오는 중 오류 발생: ", error.message);
@@ -45,10 +45,37 @@ export default function MainPage() {
         festival[(currentIndex + 2) % festival.length],
     ] : [];
 
-    const handleCardClick = (id) => {
-        navigate(`/festival/${id}`);
+    // 카드 클릭 이벤트
+    const handleCardClick = (festival) => {
+        if (!festival?.contentid) {
+            console.error("❌ 유효하지 않은 contentId:", festival?.contentid);
+            return;
+        }
+    
+        console.log("📌 클릭된 축제 데이터:", festival);
+    
+        navigate(`/festivalDetailPage/${festival.contentid}/${festival.contenttypeid ?? "12"}`, {
+            state: { 
+                title: festival.title, 
+                contentId: festival.contentid, 
+                image: festival.firstimage  // 이미지 추가!
+            },
+        });
     };
-
+    
+    
+    
+    
+    
+    // 🔍 contentTypeId가 없는 축제 로그 확인
+    useEffect(() => {
+        festival.forEach((fest) => {
+            if (!fest.contenttypeid) {
+                console.warn(`⚠️ contentTypeId가 누락된 축제: ${fest.title || "제목 없음"}`);
+            }
+        });
+    }, [festival]);
+    
     return (
         <div style={{ padding: "20px" }}>
             {/* 자동 슬라이드 카드 */}
@@ -75,7 +102,7 @@ export default function MainPage() {
                                 xs={12}
                                 sm={6}
                                 md={4}
-                                key={festival?.id || `festival-${index}`}
+                                key={festival?.contentid || `festival-${index}`} // key 값 수정
                                 sx={{
                                     transform: index === 1 ? "scale(1.1)" : "scale(1)",
                                     transition: "transform 0.3s ease-in-out",
@@ -83,19 +110,17 @@ export default function MainPage() {
                                 }}
                             >
                                 <Card
-                                    onClick={() => handleCardClick(festival?.contentid)}
+                                    onClick={() => handleCardClick(festival)}
                                     style={{
                                         boxShadow: "0px 4px 6px rgba(0,0,0,0.1)",
                                         borderRadius: "8px",
                                         overflow: "hidden",
                                     }}
                                 >
+
+
                                     <img
-                                        src={
-                                            festival?.firstimage && festival.firstimage.startsWith("http")
-                                                ? festival.firstimage
-                                                : "https://via.placeholder.com/300x200"
-                                        }
+                                        src={festival?.firstimage?.startsWith("http") ? festival.firstimage : "https://via.placeholder.com/300x200"}
                                         alt={festival?.title || "축제 정보 없음"}
                                         style={{
                                             width: "100%",
