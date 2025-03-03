@@ -1,0 +1,32 @@
+.modal-content .button-container {
+    display: flex;
+    justify-content: space-around; /* 좌우에 고르게 배치 */
+    margin-top: 20px;
+  }
+  
+  .modal-content button {
+    width: 100px;
+    padding: 8px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .modal-content button:first-child {
+    background-color: #dc3545;
+    color: white;
+  }
+  
+  .modal-content button:last-child {
+    background-color: #6c757d;
+    color: white;
+  }
+  
+  .modal-content button:first-child:hover {
+    background-color: #c82333;
+  }
+  
+  .modal-content button:last-child:hover {
+    background-color: #5a6268;
+  }
+  

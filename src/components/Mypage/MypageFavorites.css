@@ -1,0 +1,65 @@
+/* src/components/Mypage/MypageFavorites.css */
+
+.favorites-wrapper {
+    width: 100%;
+    height: auto;
+    margin-top: 40px;
+    /* 즐겨찾기 페이지 상단 여백, 스타일 조정 가능 */
+  }
+  
+  .favorites-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 16px; /* 카드 간격 */
+    margin-top: 20px;
+  }
+  
+  .festival-card {
+    cursor: pointer;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.2s;
+    background-color: #fff;
+  }
+  
+  .festival-card:hover {
+    transform: scale(1.03);
+  }
+  
+  .festival-card-content {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .festival-card-img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+  }
+  
+  .festival-content {
+    padding: 10px;
+  }
+  
+  .festival-title {
+    margin: 0;
+    font-size: 18px;
+    color: #333;
+  }
+  
+  .festival-date {
+    margin: 4px 0;
+    font-size: 14px;
+    color: #666;
+  }
+  
+  .placeholder {
+    width: 100%;
+    height: 150px;
+    background-color: #ccc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  

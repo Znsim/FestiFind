@@ -1,0 +1,42 @@
+.sidebar {
+  flex: 0 0 250px;
+  min-height: 100vh; /* 최소 높이 설정 */
+  height: auto;      /* 자동 높이 */
+  background-color: #f8f9fa;
+  padding: 0px;
+  border-right: 1px solid #ddd;
+  box-sizing: border-box;
+  position: sticky;  /* 스크롤 시 고정 */
+  top: 0;           /* 상단에 고정 */
+}
+
+.sidebar-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;      /* 너비 100%로 설정 */
+}
+
+.sidebar-item {
+  padding: 15px 20px;
+  margin: 5px 0;
+  cursor: pointer;
+  color: #333;
+  font-size: 16px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  width: 100%;      /* 너비 100%로 설정 */
+  box-sizing: border-box; /* 패딩을 너비에 포함 */
+  display: block;   /* 블록 레벨 요소로 변경 */
+}
+
+.sidebar-item:hover {
+  color: #007bff;
+  background-color: #e9ecef;
+}
+
+.sidebar-item.active {
+  color: #007bff;
+  background-color: #e9ecef;
+  font-weight: bold;
+}
