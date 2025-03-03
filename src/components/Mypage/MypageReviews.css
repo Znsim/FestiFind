@@ -1,5 +1,10 @@
 .mypage-reviews {
     padding: 50px;
+    max-width: 500px;     /* 폼의 최대 너비 제한 */
+    margin: 0 auto;       /* 가로 중앙 정렬 */
+    display: flex;        /* 내부 항목 정렬을 위해 flex 사용 (필요 시) */
+    flex-direction: column; /* 세로로 쌓기 */
+    max-width: 1000px;
   }
   
   .reviews-list {

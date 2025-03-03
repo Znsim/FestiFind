@@ -55,25 +55,19 @@ const Login = () => {
     }
 
     try {
-      // 로그인 API 호출
       const response = await loginUser({ id: username, pw: password });
       const token = response.access_token;
+      console.log("로그인 응답 토큰:", token);
       if (!token) {
         alert("로그인 실패: 토큰이 없습니다.");
         return;
       }
-      // 토큰 저장
       localStorage.setItem("token", token);
-
-      // 추가: 토큰에서 user_id(sub)를 추출해서 저장
       const sub = await fetchUserId(token);
       console.log("토큰에서 추출한 user_id:", sub);
       if (sub) {
         localStorage.setItem("user_id", sub);
-      } else {
-        console.warn("user_id를 추출하지 못했습니다.");
       }
-
       alert("로그인 성공!");
       navigate("/");
     } catch (error) {

@@ -19,3 +19,53 @@ export const getUserId = () => {
     console.log("불러온 사용자 ID:", userId); // ✅ 디버깅 로그 추가
     return userId;
 };
+
+
+// src/utils/auth.jsx
+// let jwtDecodeFn = null;
+// import("jwt-decode")
+//   .then((module) => {
+//     jwtDecodeFn = module.default || module;
+//   })
+//   .catch((err) => {
+//     console.error("Failed to import jwt-decode", err);
+//   });
+
+// export const isTokenExpired = (token) => {
+//   if (!jwtDecodeFn) {
+//     console.error("jwtDecodeFn not loaded");
+//     return true;
+//   }
+//   try {
+//     const decoded = jwtDecodeFn(token);
+//     console.log("Decoded token:", decoded);
+//     // exp는 초 단위이므로 밀리초로 변환하여 비교합니다.
+//     return decoded.exp * 1000 < Date.now();
+//   } catch (error) {
+//     console.error("Token decoding failed:", error);
+//     return true;
+//   }
+// };
+
+// export const getUserIdFromToken = () => {
+//   const token = localStorage.getItem("token");
+//   if (!token) return null;
+//   if (!jwtDecodeFn) {
+//     console.error("jwtDecodeFn not loaded");
+//     return null;
+//   }
+//   try {
+//     const decoded = jwtDecodeFn(token);
+//     console.log("Decoded token:", decoded);
+//     return decoded.sub || decoded.user_id || decoded.id || decoded.userId;
+//   } catch (error) {
+//     console.error("Token decoding failed:", error);
+//     return null;
+//   }
+// };
+
+// export const getUserId = () => {
+//   const userId = localStorage.getItem("user_id");
+//   console.log("Fetched user ID:", userId);
+//   return userId;
+// };

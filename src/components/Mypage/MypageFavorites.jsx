@@ -31,6 +31,7 @@ function MypageFavorites() {
     }
   }, []);
 
+  
   // userId가 설정되면 즐겨찾기 데이터를 가져옴
   useEffect(() => {
     async function fetchData() {
@@ -42,8 +43,19 @@ function MypageFavorites() {
         setIsLoading(true);
         // 즐겨찾기 목록 API 호출
         const favs = await getFavorites(userId);
-        console.log("즐겨찾기 데이터:", favs);
-        setFavorites(favs);
+        console.log("원본 즐겨찾기 데이터:", favs);
+        // 중복 제거: 동일 contentId를 가진 항목은 한 번만 저장
+        const uniqueFavs = [];
+        const seen = new Set();
+        favs.forEach((fav) => {
+          const id = fav.contentId || fav.contentid;
+          if (id && !seen.has(id)) {
+            seen.add(id);
+            uniqueFavs.push(fav);
+          }
+        });
+        console.log("중복 제거 후 즐겨찾기 데이터:", uniqueFavs);
+        setFavorites(uniqueFavs);
 
         // 메인 축제 데이터를 전체 가져와 contentid로 매핑
         const allFestivals = await fetchMainPageData();
