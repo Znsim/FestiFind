@@ -21,43 +21,29 @@ export default function UserRegistration() {
 
     // ✅ 아이디 및 이메일 중복 체크 함수
     const checkDuplicate = async (field, value) => {
-        if (!value) return;
+        if (!value) return false; // 값이 없으면 중복 아님
+        
         try {
             const response = await fetch(
-                `https://port-O-festifindcon-m5h20ajhfe0ec0f1.sel4.cloudtype.app/user/check-duplicate?${field}=${value}`,
+                `${import.meta.env.VITE_API_BASE_URL}/user/check-duplicate?${field}=${value}`,
                 { method: "GET", headers: { "Content-Type": "application/json" } }
             );
-            const data = await response.json();
-            if (data.exists) {
-                setErrors((prev) => ({ ...prev, [field]: `${field === "id" ? "아이디가" : "이메일이"} 중복됩니다.` }));
-            } else {
-                setErrors((prev) => ({ ...prev, [field]: "" }));
+    
+            if (!response.ok) {
+                console.error(`❌ ${field} 중복 확인 실패: 응답 오류`, response.status);
+                return false;
             }
+    
+            const data = await response.json();
+            console.log(`✅ ${field} 중복 확인 결과:`, data.exists);
+            return data.exists; // 중복이면 true, 아니면 false
         } catch (error) {
-            console.error(`${field} 중복 확인 실패`, error);
+            return false; // 오류 시 기본적으로 중복이 아님
         }
     };
-
-    // ✅ 아이디 및 이메일 입력 시 자동 중복 체크 실행
-    useEffect(() => {
-        if (id) {
-            const delayDebounce = setTimeout(() => checkDuplicate("id", id), 500);
-            return () => clearTimeout(delayDebounce);
-        }
-    }, [id]);
-
-    useEffect(() => {
-        if (email) {
-            const delayDebounce = setTimeout(() => {
-                if (!validateEmail(email)) {
-                    setErrors((prev) => ({ ...prev, email: "이메일 형식이 올바르지 않습니다. (@, . 포함 필요)" }));
-                } else {
-                    checkDuplicate("email", email);
-                }
-            }, 500);
-            return () => clearTimeout(delayDebounce);
-        }
-    }, [email]);
+    
+    
+    
 
     const handleRegionChange = (event) => {
         setRegion(event.target.value);
@@ -65,33 +51,69 @@ export default function UserRegistration() {
     };
 
     const handleRegister = async () => {
+        console.log("🔍 API Base URL:", import.meta.env.VITE_API_BASE_URL);
+    
         const newErrors = {};
-        
+    
+        // 🔹 필수 입력 검증
         if (!username) newErrors.username = "이름을 입력해주세요.";
         if (!id) newErrors.id = "아이디를 입력해주세요.";
         if (!email) newErrors.email = "이메일을 입력해주세요.";
-        else if (!validateEmail(email)) newErrors.email = "이메일 형식이 올바르지 않습니다. (@, . 포함 필요)";
+        else if (!validateEmail(email)) newErrors.email = "이메일 형식이 올바르지 않습니다.";
         if (!pw) newErrors.pw = "비밀번호를 입력해주세요.";
+        else if (pw.length < 6 || pw.length > 20) newErrors.pw = "비밀번호는 6~20자 사이여야 합니다.";
         if (!confirmPassword) newErrors.confirmPassword = "비밀번호 확인을 입력해주세요.";
         if (pw !== confirmPassword) newErrors.confirmPassword = "비밀번호가 일치하지 않습니다.";
         if (!region) newErrors.region = "관심 지역을 선택해주세요.";
-
+    
         setErrors(newErrors);
         if (Object.keys(newErrors).length > 0) return;
-
+    
+        // 🔹 버튼 클릭 시 중복 체크 실행 (500ms 딜레이 추가)
+        await new Promise((resolve) => setTimeout(resolve, 500));
+    
+        const isIdDuplicate = await checkDuplicate("id", id);
+        const isEmailDuplicate = await checkDuplicate("email", email);
+    
+        console.log("📢 ID 중복 여부:", isIdDuplicate);
+        console.log("📢 Email 중복 여부:", isEmailDuplicate);
+    
+        if (isIdDuplicate === true) {
+            setErrors((prev) => ({ ...prev, id: "아이디가 이미 존재합니다." }));
+            alert("❌ 회원가입 실패: 아이디가 이미 존재합니다.");
+            return;
+        }
+    
+        if (isEmailDuplicate === true) {
+            setErrors((prev) => ({ ...prev, email: "이메일이 이미 존재합니다." }));
+            alert("❌ 회원가입 실패: 이메일이 이미 존재합니다.");
+            return;
+        }
+    
+        // 🔹 회원가입 요청 데이터 생성
         const userData = { username, email, id, pw, region };
-
+    
+        console.log("📢 회원가입 요청 데이터:", JSON.stringify(userData, null, 2));
+    
         try {
             const response = await registerUser(userData);
             if (response) {
-                alert("회원가입 완료!");
+                alert("✅ 회원가입 완료!");
                 navigate("/");
             }
         } catch (error) {
-            alert("회원가입에 실패했습니다.");
+            console.error("❌ 회원가입 실패:", error);
+    
+            // 서버 응답에서 오류 메시지가 있는 경우 팝업 표시
+            if (error.response && error.response.data.detail) {
+                alert(`❌ 회원가입 실패: ${error.response.data.detail}`);
+            } else {
+                alert("❌ 회원가입에 실패했습니다. 다시 시도해주세요.");
+            }
         }
     };
-
+    
+    
     return (
         <div className="signup-container">
             <div className="signup-content">

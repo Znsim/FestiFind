@@ -1,36 +1,23 @@
-/* 기본 초기화 */
-html, body {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box; /* 크기 계산에 패딩과 테두리를 포함 */
-    width: 100%;
-    height: 100%;
-    overflow: hidden; /* 스크롤바 방지 */
-  }
-  
-  /* 자식 요소에도 box-sizing 상속 */
-  *, *::before, *::after {
-    box-sizing: inherit;
-  }
-  
-  /* 전체 레이아웃 스타일 */
-  .mypage-container {
-    display: flex;
-    flex-direction: row;
-    width: 100%; /* 스크롤바 방지 */
-    height: 100%; /* 스크롤바 방지 */
-  }
-  
-  .sidebar {
-    width: 250px;
-    height: 100%;
-    background-color: #f8f9fa;
-    border-right: 1px solid #ddd;
-  }
-  
-  .mypage-content {
-    flex: 1;
-    height: 100%;
-    background-color: #fff;
-  }
-  
+/* src/pages/User/Mypage.css */
+
+/* 전체 컨테이너 */
+.mypage-container {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  min-height: 100vh; /* 화면 전체 높이 */
+}
+
+/* 왼쪽 사이드바 */
+.sidebar {
+  width: 250px; /* 고정 너비 */
+  background-color: #f8f9fa;
+  border-right: 1px solid #ddd;
+}
+
+/* 오른쪽 메인 컨텐츠 영역 */
+.mypage-content {
+  flex: 1;           /* 나머지 공간을 전부 차지 */
+  padding: 20px;     /* 패딩 조절 가능 */
+  background-color: #fff;
+}

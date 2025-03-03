@@ -1,164 +1,245 @@
-/* 캘린더 부모 컨테이너 */
+/* ✅ 전체 페이지 스크롤 가능하게 설정 */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  overflow-y: auto; /* 전체 페이지 스크롤 허용 */
+  font-family: Arial, sans-serif;
+  background-color: #f8f9fa;
+}
+
+/* 📌 캘린더 & 축제 정보창 부모 컨테이너 */
 .calendar-container {
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  min-height: 88vh; /* 최소 높이는 유지 */
+  min-height: 100vh;
   width: 100vw;
-  background-color: #fff;
   padding: 20px;
   box-sizing: border-box;
 }
 
-/* 왼쪽 캘린더 */
+/* ✅ 왼쪽 캘린더 (크기 자동 조절) */
 .calendar-left {
-  color: #333;
-  flex: 1;
-  max-width: 70%;
+  flex: 2;
+  max-width: 62%;
   margin-right: 20px;
-  margin-top: 60px;
+  display: flex;
+  flex-direction: column;
 }
 
-/* 오른쪽 이벤트 정보 */
+/* ✅ 오른쪽 축제 정보 패널 (캘린더 높이에 맞춰 자동 조정) */
 .calendar-right {
-  flex: 1;
+  flex: 1.2;
   max-width: 30%;
   padding: 20px;
-  margin-top: 60px;
-  background-color: #fff;
+  background-color: white;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   position: relative;
-  transform: translateX(-100px);
-  transition: all 0.3s ease-in-out;
+  overflow-y: auto; /* ✅ 내부 스크롤 가능 */
+  border-radius: 10px;
+  display: none;
+  flex-direction: column;
+  justify-content: flex-start;
 }
 
-.close-button {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background: transparent;
-  border: none;
-  font-size: 24px;
-  font-weight: bold;
-  color: #333;
-  cursor: pointer;
-  transition: color 0.3s ease;
+/* 축제 정보가 있을 때 보이도록 */
+.calendar-right.visible {
+  display: flex;
 }
 
-.close-button:hover {
-  color: #357ac4;
-}
-
-/* 기본 달력 스타일 */
-.react-calendar {
-  width: 800px;
-  height: auto; /* 동적으로 높이를 조절 */
+/* ✅ 캘린더 스타일 */
+.react-calendar, .custom-calendar {
+  width: 100% !important;
+  max-width: 900px;
+  height: auto;
   margin: 0 auto;
-  border: none;
+  border: 1px solid #ddd !important;
   background-color: #fff;
-  font-family: Arial, sans-serif;
   font-size: 16px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   padding: 30px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
+/* ✅ 캘린더 타일 스타일 */
 .react-calendar__tile {
   border: 1px solid #ddd;
-  width: 100px;
-  height: 114px;
+  width: 110px;
+  height: 120px;
   margin: 5px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 14px;
-  transition: all 0.2s ease-in-out;
+  font-size: 16px;
   background-color: white;
-  color: #333 !important;
+  color: #333;
   position: relative;
+  transition: all 0.2s ease-in-out;
 }
 
+/* ✅ 오늘 날짜 스타일 */
 .react-calendar__tile--now {
-  background-color: #fff3e0;
-  color: #333 !important;
+  background-color: #ffebcd;
+  color: #333;
 }
 
+/* ✅ 선택한 날짜 스타일 */
 .react-calendar__tile--active {
   background-color: #4a90e2 !important;
   color: white !important;
 }
 
-/* 지난달과 다음달 날짜 */
-.react-calendar__month-view__days__day--neighboringMonth {
-  color: #aaa !important;
-  background-color: #f5f5f5 !important;
+/* ✅ 달력 헤더 스타일 (월, 요일 등) */
+.react-calendar__navigation {
+  height: 60px;
+  margin-bottom: 20px;
 }
 
-/* 지난달과 다음달의 토요일 */
-.react-calendar__month-view__days__day--neighboringMonth.saturday {
-  color: #aaa !important; /* 토요일도 회색으로 */
+.react-calendar__navigation button {
+  font-size: 18px;
+  font-weight: bold;
 }
 
-/* 지난달과 다음달의 일요일 */
-.react-calendar__month-view__days__day--neighboringMonth.sunday {
-  color: #aaa !important; /* 일요일도 회색으로 */
+.react-calendar__month-view__weekdays {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 10px;
 }
 
-.react-calendar__navigation__label {
-  color: #000 !important;
-}
-
-.react-calendar__navigation__arrow {
-  color: #000 !important;
-}
-
+/* ✅ 이벤트 점 표시 */
 .react-calendar .event-dot {
   position: absolute;
-  bottom: 5px;
-  right: 5px;
-  width: 5px;
-  height: 5px;
+  bottom: 10px;
+  right: 10px;
+  width: 8px;
+  height: 8px;
   background-color: red;
   border-radius: 50%;
-  box-shadow: 0 0 3px rgba(0, 0, 0, 0.2);
 }
 
-.event-info {
-  color: #333 !important;
+/* ✅ 토요일, 일요일 색상 */
+.saturday abbr {
+  color: #0066cc; /* 토요일 파란색 */
 }
 
-.event-info h3 {
-  color: #333 !important;
+.sunday abbr {
+  color: #ff0000; /* 일요일 빨간색 */
 }
 
-.event-info ul li {
-  color: #333 !important;
+/* ✅ 축제 정보 스타일 */
+.event-info-container {
+  width: 100%;
+  height: 100%;
+  overflow-y: auto; /* ✅ 내부 스크롤 가능 */
+  padding: 10px;
 }
 
-/* 년도/월/10년 선택 타일 */
-.react-calendar__year-view .react-calendar__tile,
-.react-calendar__decade-view .react-calendar__tile,
-.react-calendar__century-view .react-calendar__tile {
-  color: #333 !important; /* 검정색 글자 */
-  max-width: 185px;
-  height: 185px;
-  box-shadow: 0 0 3px rgba(0, 0, 0, 0.2);
-  border-radius: 0%;
+/* ✅ 축제 정보 헤더 */
+.event-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eee;
+  margin-bottom: 15px;
 }
 
-.react-calendar__year-view .react-calendar__tile--active,
-.react-calendar__decade-view .react-calendar__tile--active,
-.react-calendar__century-view .react-calendar__tile--active {
-  background-color: white !important;
-  color: #333 !important;
-  border: 1px solid #ddd !important;
+/* ✅ 닫기 버튼 스타일 */
+.close-button {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #555;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 0.2s;
 }
 
-/* 토요일 스타일 */
-.react-calendar .saturday:not(.react-calendar__month-view__days__day--neighboringMonth) {
-  color: #457b9d !important; /* 일반 토요일 */
+.close-button:hover {
+  background-color: #f1f1f1;
+  color: #333;
 }
 
-/* 일요일 스타일 */
-.react-calendar .sunday:not(.react-calendar__month-view__days__day--neighboringMonth) {
-  color: #e63946 !important; /* 일반 일요일 */
+/* ✅ 축제 정보 제목 */
+.event-title {
+  margin: 0;
+  font-size: 20px;
+  color: #333;
+}
+
+/* ✅ 축제 카드 스타일 */
+.festival-card {
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  margin-bottom: 15px;
+  overflow: hidden;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.festival-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.festival-card-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.festival-card-img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 8px 8px 0 0;
+}
+
+.placeholder {
+  width: 100%;
+  height: 200px;
+  background-color: #f0f0f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #888;
+  font-size: 14px;
+  border-radius: 8px 8px 0 0;
+}
+
+.festival-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 16px !important;
+  width: 100%;
+}
+
+.festival-title {
+  margin: 0 0 8px 0;
+  font-size: 16px;
+  color: #333;
+  font-weight: bold;
+  text-align: center;
+}
+
+.festival-date {
+  margin: 0 0 5px 0;
+  font-size: 14px;
+  color: #666;
+  text-align: center;
+}
+
+.festival-location {
+  margin: 0;
+  font-size: 14px;
+  color: #666;
+  text-align: center;
 }

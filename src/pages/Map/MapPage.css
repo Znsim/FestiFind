@@ -1,0 +1,49 @@
+.map-page {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+  }
+  
+  .festival-list {
+    flex: 1 0 30%;
+    max-width: 400px;
+    padding: 20px;
+    overflow-y: auto;
+    background-color: #f9f9f9;
+    border-right: 1px solid #ddd;
+    box-sizing: border-box;
+  }
+  
+  .festival-item {
+    padding: 15px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: white;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    color: #000; /* 글씨 검정색 */
+  }
+  
+  .festival-item h4 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: bold;
+  }
+  
+  .festival-item p {
+    margin: 5px 0;
+    font-size: 14px;
+  }
+  
+  .festival-item:hover {
+    background-color: #f0f0f0;
+  }
+  
+  .map-container {
+    flex: 2 1 70%;
+    min-width: 600px;
+    height: 100%;
+  }
+  

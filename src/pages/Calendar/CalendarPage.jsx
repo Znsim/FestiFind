@@ -1,38 +1,97 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import "./CalendarPage.css";
-//npm install react-calendar 이 패키지 꼭 설치할 것
+import { fetchCalendar } from "../../api/calendarApi";
+import Grid from "@mui/material/Grid";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Tooltip from "@mui/material/Tooltip";
+import { useNavigate } from "react-router-dom";
+
+const MAX_TITLE_LENGTH = 20;
+
 const CalendarPage = () => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [festivalData, setFestivalData] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const [activeDate, setActiveDate] = useState(new Date());
+  const [showEventInfo, setShowEventInfo] = useState(false);
+  const [calendarHeight, setCalendarHeight] = useState("auto");
 
-  const fetchFestivalData = async () => {
+  const navigate = useNavigate();
+  const calendarRef = useRef(null);
+
+  const currentYear = activeDate.getFullYear();
+  const currentMonth = activeDate.getMonth() + 1;
+
+  useEffect(() => {
+    fetchFestivalData(currentYear, currentMonth);
+  }, [currentYear, currentMonth]);
+
+  useEffect(() => {
+    if (calendarRef.current) {
+      setCalendarHeight(`${calendarRef.current.clientHeight}px`);
+    }
+  }, [festivalData, currentMonth]);
+
+  const fetchFestivalData = async (year, month) => {
     setIsLoading(true);
     try {
-      const response = await fetch("/api/festivals");
-      if (!response.ok) {
-        throw new Error("Failed to fetch festival data");
-      }
-      const data = await response.json();
-      setFestivalData(data);
+      const data = await fetchCalendar(year, month);
+      console.log("📌 API에서 받은 축제 데이터:", data); // ✅ 데이터 확인
+      setFestivalData(data || {});
     } catch (error) {
-      console.error("Error fetching festival data:", error);
+      console.error("❌ API 오류:", error.message);
     } finally {
       setIsLoading(false);
     }
   };
 
-  useEffect(() => {
-    fetchFestivalData();
-  }, []);
-
   const handleDateChange = (date) => {
     setSelectedDate(date);
+    setShowEventInfo(true);
   };
 
-  const formatDateKey = (date) => date.toISOString().split("T")[0];
+  const handleMonthChange = ({ activeStartDate }) => {
+    if (activeStartDate) {
+      setActiveDate(activeStartDate);
+    }
+  };
+
+  const formatDateKey = (date) => {
+    return date.getDate().toString().padStart(2, "0");
+  };
+
+  const handleCloseEventInfo = () => {
+    setShowEventInfo(false);
+  };
+
+  // ✅ 축제 상세 페이지로 이동하는 함수
+  const handleFestivalClick = (festival) => {
+    if (!festival || !festival.contentid) {
+      console.log("❌ 축제 정보가 없거나 contentid가 없습니다:", festival);
+      return;
+    }
+
+    console.log("📌 클릭된 축제 데이터:", festival);
+
+    navigate(`/festivalDetailPage/${festival.contentid}/15`, {
+      state: {
+        title: festival.title,
+        image: festival.firstimage || festival.firstimage2 || null
+      },
+    });
+  };
+
+  const tileClassName = ({ date, view }) => {
+    if (view === "month") {
+      const day = date.getDay();
+      if (day === 0) return "sunday";
+      if (day === 6) return "saturday";
+    }
+    return null;
+  };
 
   const renderEventInfo = () => {
     if (!selectedDate) return null;
@@ -40,20 +99,55 @@ const CalendarPage = () => {
     const events = festivalData[dateKey];
 
     return (
-      <div className="event-info">
-        <h3>Events on {selectedDate.toDateString()}</h3>
-        {events ? (
-          <ul>
-            {events.map((event, index) => (
-              <li key={index}>{event}</li>
-            ))}
-          </ul>
+      <div className="event-info-container">
+        <div className="event-header">
+          <h2 className="event-title">{selectedDate.toDateString()} 축제 정보</h2>
+          <button className="close-button" onClick={handleCloseEventInfo}>
+            ×
+          </button>
+        </div>
+        {events && events.length > 0 ? (
+          <Grid container spacing={2}>
+            {events.map((festival, index) => {
+              if (!festival) return null;
+
+              console.log("📸 축제 데이터 확인:", festival); // ✅ 데이터 로그 확인
+
+              const imageUrl = festival.firstimage || festival.firstimage2 || "https://via.placeholder.com/200";
+              const truncatedTitle =
+                festival.title && festival.title.length > MAX_TITLE_LENGTH
+                  ? festival.title.slice(0, MAX_TITLE_LENGTH) + "..."
+                  : festival.title || "제목 없음";
+
+              return (
+                <Grid item xs={12} key={festival.contentid || `festival-${index}`}>
+                  <Card onClick={() => handleFestivalClick(festival)} className="festival-card">
+                    <div className="festival-card-content">
+                      {imageUrl.startsWith("http") ? (
+                        <img src={imageUrl} alt={festival.title || "축제 정보 없음"} className="festival-card-img" />
+                      ) : (
+                        <div className="placeholder">이미지 없음</div>
+                      )}
+                      <CardContent className="festival-content">
+                        <Tooltip title={festival.title || "축제 정보 없음"} arrow>
+                          <h3 className="festival-title">{truncatedTitle}</h3>
+                        </Tooltip>
+                        {festival.eventstartdate && festival.eventenddate && (
+                          <p className="festival-date">
+                            {festival.eventstartdate} ~ {festival.eventenddate}
+                          </p>
+                        )}
+                        <p className="festival-location">{festival.addr1 || "위치 정보 없음"}</p>
+                      </CardContent>
+                    </div>
+                  </Card>
+                </Grid>
+              );
+            })}
+          </Grid>
         ) : (
-          <p>No events on this day.</p>
+          <p className="no-event">해당 날짜에 축제 정보가 없습니다.</p>
         )}
-        <button className="close-button" onClick={() => setSelectedDate(null)}>
-          &times;
-        </button>
       </div>
     );
   };
@@ -61,43 +155,27 @@ const CalendarPage = () => {
   return (
     <div className="calendar-page">
       <div className="calendar-container">
-        <div className="calendar-left">
+        <div className="calendar-left" ref={calendarRef}>
           {isLoading ? (
             <p>Loading...</p>
           ) : (
             <Calendar
               onChange={handleDateChange}
               value={selectedDate}
-              tileClassName={({ date, view }) => {
-                const dateKey = formatDateKey(date);
-                const today = new Date();
-                const todayKey = formatDateKey(today);
-
-                if (view === "year" || view === "decade" || view === "century") {
-                  return "custom-year-tile";
-                }
-
-                if (festivalData[dateKey]) return "event-day";
-                if (todayKey === dateKey) return "today";
-
-                const dayOfWeek = date.getDay();
-                if (dayOfWeek === 6) return "saturday";
-                if (dayOfWeek === 0) return "sunday";
-
-                return null;
-              }}
+              activeStartDate={activeDate}
+              onActiveStartDateChange={handleMonthChange}
+              tileClassName={tileClassName}
               tileContent={({ date }) => {
                 const dateKey = formatDateKey(date);
-                if (festivalData[dateKey]) {
-                  return <div className="event-dot"></div>;
-                }
-                return null;
+                return festivalData[dateKey] ? <div className="event-dot"></div> : null;
               }}
               className="custom-calendar"
             />
           )}
         </div>
-        {selectedDate && <div className="calendar-right">{renderEventInfo()}</div>}
+        <div className={`calendar-right ${showEventInfo ? "visible" : ""}`} style={{ height: calendarHeight }}>
+          {renderEventInfo()}
+        </div>
       </div>
     </div>
   );

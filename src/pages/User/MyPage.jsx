@@ -1,3 +1,4 @@
+// src/pages/User/Mypage.jsx
 import React, { useState } from "react";
 import "./Mypage.css";
 import MypageSidebar from "../../components/Mypage/MypageSidebar";
@@ -8,12 +9,12 @@ const Mypage = () => {
 
   return (
     <div className="mypage-container">
-      {/* Sidebar */}
+      {/* 왼쪽 사이드바 */}
       <div className="sidebar">
         <MypageSidebar setSelectedMenu={setSelectedMenu} />
       </div>
 
-      {/* Content */}
+      {/* 오른쪽 컨텐츠 */}
       <div className="mypage-content">
         <MypageContent selectedMenu={selectedMenu} />
       </div>

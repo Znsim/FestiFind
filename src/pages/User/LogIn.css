@@ -17,7 +17,7 @@
     display: flex;
     justify-content: center;
     align-items: stretch; /* 세로를 컨테이너 높이에 맞춤 */
-    width: 65%; /* 가로 크기를 제한 */
+    width: 80%; /* 가로 크기를 제한 */
     max-width: 1200px; /* 최대 너비 설정 */
     height: 55%; /* 컨테이너 높이 비율 */
     gap: 0; /* 이미지와 폼 간격 제거 */
@@ -30,7 +30,7 @@
 
 /* 이미지 컨테이너 */
 .login-image-container {
-    flex: 2; /* 가로 공간 비율을 더 크게 */
+    flex: 1.5; /* 가로 공간 비율을 더 크게 */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -41,7 +41,7 @@
 .login-image-container img {
     width: 100%; /* 부모의 가로를 가득 채움 */
     height: 100%; /* 부모의 세로를 가득 채움 */
-    object-fit: cover; /* 이미지를 잘라내며 부모 컨테이너에 맞춤 */
+    object-fit: fill; /* 이미지를 잘라내며 부모 컨테이너에 맞춤 */
 }
 
 /* 로그인 폼 */

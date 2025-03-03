@@ -10,6 +10,9 @@ import SearchPage from "./pages/Serach/SerachPage";
 import Signup from "./pages/User/Signup";
 import  Login  from "./pages/User/LogIn";
 import CalendarPage from "./pages/Calendar/CalendarPage";
+import Mypage from "./pages/User/MyPage";
+import Mappage from "./pages/Map/MapPage";
+
 createRoot(document.getElementById("root")).render(
     <StrictMode>
         <Router>
@@ -23,7 +26,8 @@ createRoot(document.getElementById("root")).render(
                 <Route path="/signup" element={<Signup/>}/>
                 <Route path="/festivalDetailPage/:contentId/:contentTypeId" element={<FestivalDetailPage />} />
                 <Route path="/festival/:id" element={<FestivalDetailPage />} />
-                
+                <Route path="/mypage" element={<Mypage/>}/>
+                <Route path="/map" element={<Mappage/>}/>
             </Routes>
         </Router>
     </StrictMode>
