@@ -1,24 +1,16 @@
 import api from "./api";
 
-// 캘린더 데이터 가져오기 (GET)
-export const fetchCalendar = async () => {
+export const fetchCalendar = async (year, month) => { 
     try {
-        const response = await api.get("api/캘린더");
+        console.log(`🛰 API Request: Year = ${year}, Month = ${month}`); // ✅ 요청 로그 확인
+        const response = await api.post("api/calendar", {
+            Year: year,
+            Month: month
+        });
+        console.log("✅ API Response Data:", response.data); // ✅ 백엔드에서 받은 데이터 로그 확인
         return response.data;
     } catch (error) {
-        console.error("Calendar 오류:", error.response?.data || error.message);
-        throw error;
-    }
-};
-
-//POST는 없어도 될 듯 한데
-// 캘린더에 새로운 데이터 추가 (POST)
-export const addCalendarEvent = async (festivalData) => {
-    try {
-        const response = await api.post("api/캘린더", festivalData);
-        return response.data;
-    } catch (error) {
-        console.error("Calendar 오류:", error.response?.data || error.message);
+        console.error("❌ Calendar API 오류:", error.response?.data || error.message);
         throw error;
     }
 };
