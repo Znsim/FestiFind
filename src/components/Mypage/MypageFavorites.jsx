@@ -4,16 +4,17 @@ import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Tooltip from "@mui/material/Tooltip";
-import { getFavorites } from "../../api/favoritesApi"; // 즐겨찾기 API
-import { fetchMainPageData } from "../../api/mainPageApi"; // 메인 축제 데이터 API
+import { getFavorites } from "../../api/favoritesApi"; // 즐겨찾기 목록 API
+import { festivalDetailPageApi } from "../../api/festivalDetailsApi"; // 메인 축제 데이터 API (축제 상세 API)
 import { fetchUserId } from "../../api/user_idApi"; // 토큰에서 user_id 추출 함수
 import "./MypageFavorites.css";
 
 const MAX_TITLE_LENGTH = 20;
+const PLACEHOLDER_IMAGE = "https://placehold.co/200";
 
 function MypageFavorites() {
   const [favorites, setFavorites] = useState([]);
-  const [festivalMap, setFestivalMap] = useState({}); // key: contentid, value: 축제 정보
+  const [festivalMap, setFestivalMap] = useState({}); // key: contentid, value: 축제 상세 정보
   const [userId, setUserId] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
@@ -31,7 +32,6 @@ function MypageFavorites() {
     }
   }, []);
 
-  
   // userId가 설정되면 즐겨찾기 데이터를 가져옴
   useEffect(() => {
     async function fetchData() {
@@ -58,7 +58,7 @@ function MypageFavorites() {
         setFavorites(uniqueFavs);
 
         // 메인 축제 데이터를 전체 가져와 contentid로 매핑
-        const allFestivals = await fetchMainPageData();
+        const allFestivals = await festivalDetailPageApi();
         console.log("메인 축제 데이터:", allFestivals);
         const map = {};
         allFestivals.forEach((festival) => {
@@ -83,11 +83,12 @@ function MypageFavorites() {
       console.error("유효하지 않은 content id:", fav);
       return;
     }
+    // 병합: festivalMap에 데이터가 있으면 우선 사용, 없으면 fav 객체 자체의 정보를 사용
     const festivalInfo = festivalMap[id] || {};
     navigate(`/festivalDetailPage/${id}/15`, {
       state: {
-        title: festivalInfo.title || `축제 ${id}`,
-        image: festivalInfo.firstimage || festivalInfo.firstimage2 || "https://placehold.co/200",
+        title: festivalInfo.title || fav.title || `축제 ${id}`,
+        image: festivalInfo.firstimage || festivalInfo.firstimage2 || fav.firstimage || fav.firstimage2 || PLACEHOLDER_IMAGE,
       },
     });
   };
@@ -113,9 +114,14 @@ function MypageFavorites() {
         <Grid container spacing={2}>
           {favorites.map((fav, index) => {
             const id = fav.contentId || fav.contentid;
-            const festivalInfo = festivalMap[id] || {};
-            const title = festivalInfo.title || `축제 ${id}`;
-            const imageUrl = festivalInfo.firstimage || festivalInfo.firstimage2 || "https://placehold.co/200";
+            // festivalMap 데이터가 없을 경우, 즐겨찾기 항목에 이미 저장된 값을 사용
+            const title = (festivalMap[id]?.title || fav.title) || `축제 ${id}`;
+            const imageUrl =
+              festivalMap[id]?.firstimage ||
+              festivalMap[id]?.firstimage2 ||
+              fav.firstimage ||
+              fav.firstimage2 ||
+              PLACEHOLDER_IMAGE;
             const key = id ? `${id}-${index}` : `festival-${index}`;
 
             return (
@@ -127,12 +133,16 @@ function MypageFavorites() {
                       <Tooltip title={title} arrow>
                         <h3 className="festival-title">{truncateTitle(title)}</h3>
                       </Tooltip>
-                      {festivalInfo.eventstartdate && festivalInfo.eventenddate && (
+                      { (festivalMap[id]?.eventstartdate || fav.eventstartdate) && (festivalMap[id]?.eventenddate || fav.eventenddate) && (
                         <p className="festival-date">
-                          {festivalInfo.eventstartdate} ~ {festivalInfo.eventenddate}
+                          {festivalMap[id]?.eventstartdate || fav.eventstartdate} ~ {festivalMap[id]?.eventenddate || fav.eventenddate}
                         </p>
                       )}
-                      {festivalInfo.addr1 && <p className="festival-location">{festivalInfo.addr1}</p>}
+                      { (festivalMap[id]?.addr1 || fav.addr1) && (
+                        <p className="festival-location">
+                          {festivalMap[id]?.addr1 || fav.addr1}
+                        </p>
+                      )}
                     </CardContent>
                   </div>
                 </Card>
